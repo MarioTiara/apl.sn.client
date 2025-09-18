@@ -1,0 +1,90 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.vs/
+.vscode/
+
+# Rider IDE
+.idea/
+
+# ReSharper
+_ReSharper*/
+*.ReSharper
+*.DotSettings.user
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET / IIS / publish
+publish/
+*.publish.xml
+
+# Entity Framework Migrations
+Migrations/
+*.dbmdl
+*.bak
+*.mdf
+*.ldf
+*.ndf
+
+# User secrets (dotnet user-secrets)
+secrets.json
+*.pfx
+*.key
+*.cer
+
+# DotCover
+*.dotCover
+
+# Coverlet
+coverage.*
+*.coverage
+*.coveragexml
+*.opencover.xml
+TestResults/
+
+# Azure Functions
+.local.settings.json
+.settings/
+
+# Rider caches
+.idea/
+
+# VS Code
+.vscode/
+.history/
+
+# .NET Core runtime
+*.runtimeconfig.json
+
+# Rider
+.idea/
+*.sln.iml
+
+# JetBrains Rider
+.idea/
+
+# JetBrains Rider
+*.sln.iml
