@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SN.Workers", "SN.Workers", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SN.AZIParser", "SN.Workers\SN.AZIParser\SN.AZIParser.csproj", "{2FFDAD5F-D1B1-4FD8-8B83-76E7FA020219}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SN.Infrastructure", "SN.Infrastructure\SN.Infrastructure.csproj", "{F1455BC8-261F-405F-A132-C19630EEFCCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,18 @@ Global
 		{2FFDAD5F-D1B1-4FD8-8B83-76E7FA020219}.Release|x64.Build.0 = Release|Any CPU
 		{2FFDAD5F-D1B1-4FD8-8B83-76E7FA020219}.Release|x86.ActiveCfg = Release|Any CPU
 		{2FFDAD5F-D1B1-4FD8-8B83-76E7FA020219}.Release|x86.Build.0 = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|x64.Build.0 = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|x64.ActiveCfg = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|x64.Build.0 = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1455BC8-261F-405F-A132-C19630EEFCCF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
