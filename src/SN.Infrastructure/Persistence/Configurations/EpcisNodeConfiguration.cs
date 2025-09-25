@@ -12,10 +12,8 @@ namespace SN.Infrastructure.Persistence.Configurations
         {
             // Table name
             builder.ToTable("EpcisNodes");
-
             // Primary key
             builder.HasKey(e => e.Id);
-
             // Properties
             builder.Property(e => e.EpcisCode)
                    .IsRequired()

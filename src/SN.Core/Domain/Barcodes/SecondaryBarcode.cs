@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using SN.Core.Domain.Documents;
 using SN.Core.Domain.ValueObjects;
 
 namespace SN.Core.Domain.Barcodes;
@@ -11,15 +12,18 @@ public class SecondaryBarcode : BarcodeAgregation
     public TertiaryBarcode? Parent { get; private set; }
 
     // Navigation property ke detail
+    public Guid DetailId { get; private set; }
     public Barcode Detail { get; private set; }
     public IEnumerable<PrimaryBarcode> Primaries => _primaries.ToImmutableList().AsReadOnly();
     public SecondaryBarcode(){}
-    public SecondaryBarcode(BPOM2DBarcode barcode, TertiaryBarcode? parent, Guid documentId)
+    public SecondaryBarcode(BPOM2DBarcode barcode, TertiaryBarcode? parent, SNDocument document)
     {
-           DocumentId = documentId;
+           DocumentId = document.Id;
         BPOM2DBarCode = barcode.ToString();
         RegistrationStatus = RegistrationStatus.Pending;
         Detail = new Barcode(barcode);
+        DetailId = Detail.Id;
+        Document = document;
         Parent = parent;
         ParentId = parent?.Id;
         _primaries = new List<PrimaryBarcode>();

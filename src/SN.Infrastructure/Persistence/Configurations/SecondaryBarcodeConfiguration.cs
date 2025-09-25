@@ -21,10 +21,11 @@ public class SecondaryBarcodeConfiguration : IEntityTypeConfiguration<SecondaryB
                .IsRequired();
 
               // One-to-one: Secondary -> Detail
-              builder.HasOne(sb => sb.Detail)
-                     .WithOne()
-                     .HasForeignKey<Barcode>(b => b.Id)
-               .IsRequired().OnDelete(DeleteBehavior.Restrict);
+              builder.HasOne(pb => pb.Detail)
+                                   .WithOne()
+                                   .HasForeignKey<SecondaryBarcode>(pb => pb.DetailId)
+                                   .IsRequired()
+                                   .OnDelete(DeleteBehavior.Restrict);
 
               // Many-to-one: Secondary -> Tertiary
               builder.HasOne(sb => sb.Parent)

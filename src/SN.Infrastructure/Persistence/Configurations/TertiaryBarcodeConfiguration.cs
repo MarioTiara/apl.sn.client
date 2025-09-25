@@ -27,11 +27,11 @@ namespace SN.Infrastructure.Persistence.Configurations
                    .IsRequired();
                    
        // One-to-one: Tertiary -> Detail
-                     builder.HasOne(tb => tb.Detail)
-              .WithOne()
-              .HasForeignKey<Barcode>(b => b.Id)
-              .IsRequired()
-              .OnDelete(DeleteBehavior.Restrict);
+              builder.HasOne(pb => pb.Detail)
+                                   .WithOne()
+                                   .HasForeignKey<TertiaryBarcode>(pb => pb.DetailId)
+                                   .IsRequired()
+                                   .OnDelete(DeleteBehavior.Restrict);
 }
        }
 }

@@ -4,7 +4,7 @@ public sealed class Batch
 {
     public string? Value { get; }
 
-    public Batch(string value)
+    public Batch(string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -13,7 +13,7 @@ public sealed class Batch
         }
         else
         {
-           
+            Value = null;
         }
     }
 

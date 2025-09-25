@@ -37,21 +37,22 @@ namespace SN.Infrastructure.Persistence.Configurations
                             .OnDelete(DeleteBehavior.Cascade);
 
                      // Ignore the private Barcodes collection for EF mapping
-                     builder.Ignore(d => d.Barcodes);
 
-                     builder.HasMany<PrimaryBarcode>()
-                .WithOne()
-                .HasForeignKey(b => b.DocumentId)
-                .OnDelete(DeleteBehavior.Cascade);
 
-                     builder.HasMany<SecondaryBarcode>()
-                            .WithOne()
-                            .HasForeignKey(b => b.DocumentId)
+                     // Barcodes (private backing field)
+                     builder.HasMany(typeof(PrimaryBarcode), "_primaries")
+                            .WithOne("Document")
+                            .HasForeignKey("DocumentId")
                             .OnDelete(DeleteBehavior.Cascade);
 
-                     builder.HasMany<TertiaryBarcode>()
-                            .WithOne()
-                            .HasForeignKey(b => b.DocumentId)
+                     builder.HasMany(typeof(SecondaryBarcode), "_secondaries")
+                            .WithOne("Document")
+                            .HasForeignKey("DocumentId")
+                            .OnDelete(DeleteBehavior.Cascade);
+
+                     builder.HasMany(typeof(TertiaryBarcode), "_tertiaries")
+                            .WithOne("Document")
+                            .HasForeignKey("DocumentId")
                             .OnDelete(DeleteBehavior.Cascade);
               }
        }
