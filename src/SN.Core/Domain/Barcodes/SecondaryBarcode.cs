@@ -16,10 +16,10 @@ public class SecondaryBarcode : BarcodeAgregation
     public Barcode Detail { get; private set; }
     public IEnumerable<PrimaryBarcode> Primaries => _primaries.ToImmutableList().AsReadOnly();
     public SecondaryBarcode(){}
-    public SecondaryBarcode(BPOM2DBarcode barcode, TertiaryBarcode? parent, SNDocument document)
+    public SecondaryBarcode(IBPOM2DBarcode barcode, TertiaryBarcode? parent, SNDocument document)
     {
            DocumentId = document.Id;
-        BPOM2DBarCode = barcode.ToString();
+        BPOM2DBarCode = barcode.Get2DBarcode();
         RegistrationStatus = RegistrationStatus.Pending;
         Detail = new Barcode(barcode);
         DetailId = Detail.Id;

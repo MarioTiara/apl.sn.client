@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SN.Core.Domain.Companies;
 using SN.Core.Domain.Documents;
 using SN.Core.Domain.Barcodes;
-using SN.Core.Domain.Epcis;
+using SN.Core.Domain.SerialNode;
 using System.Reflection;
 
 namespace SN.Infrastructure.Persistence
@@ -17,7 +17,7 @@ namespace SN.Infrastructure.Persistence
         // DbSets
         public DbSet<Company> Companies { get; set; }
         public DbSet<SNDocument> Documents { get; set; }
-        public DbSet<EpcisNode> EpcisNodes { get; set; }
+        public DbSet<SerializedNode> SerializedNodes { get; set; }
 
         // Barcode hierarchy
         public DbSet<Barcode> Barcodes { get; set; }

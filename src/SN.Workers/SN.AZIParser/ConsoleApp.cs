@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SN.Core.Domain.Companies;
+using SN.Core.Domain.SAPIntegration;
 using SN.Infrastructure.Persistence;
 
 namespace SN.AZIParser;
@@ -28,15 +29,16 @@ public class ConsoleApp : IHostedService
         var parser = new AZIEPCISParser();
         var companyOwner = context.Companies.FirstOrDefault(c => c.CompanyCode == "AZI");
         var snDocument = parser.ParseToSNDocument(path, companyOwner?? new Company("AZI", "Azi company"));
+
+        var SAPDataSyncLogs= snDocument.PrimaryBarcodes
+            .Select(pb =>  new SAPDataSyncLog(pb.Detail) )
+            .ToList();
         using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-
-
-            // context.Documents.
-            // Save all changes in one transaction
             context.Add(snDocument);
             // context.Add(snDocument.Barcodes);
+            context.AddRange(SAPDataSyncLogs);
             await context.SaveChangesAsync();
 
             // Commit transaction

@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+
 using SN.Core.Domain.Common;
 using SN.Core.Domain.Documents;
 
@@ -14,6 +14,11 @@ public abstract class BarcodeAgregation : BaseEntity
     {
         BPOM2DBarCode = string.Empty;
         RegistrationStatus = RegistrationStatus.Pending;
+    }
+
+    public void SetRegistrationStatus(RegistrationStatus status)
+    {
+        RegistrationStatus = status;
     }
 
 }

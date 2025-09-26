@@ -29,6 +29,10 @@ namespace SN.Infrastructure.Persistence.Configurations
                      builder.Property(b => b.Batch)
                             .HasMaxLength(50);
 
+                     builder.Property(b => b.Level)
+                            .HasConversion<string>()
+                            .IsRequired();
+
                      builder.Property(b => b.ExpireDate)
                             .HasColumnType("date"); // DateOnly mapping
 

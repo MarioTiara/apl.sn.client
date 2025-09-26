@@ -4,7 +4,7 @@ using SN.Core.Domain.ValueObjects;
 
 namespace SN.Core.Domain.Barcodes;
 
-public class PrimaryBarcode:BarcodeAgregation
+public class PrimaryBarcode : BarcodeAgregation
 {
     //Navigate to Secondary Barcode
     public Guid? ParentId { get; private set; }
@@ -13,19 +13,20 @@ public class PrimaryBarcode:BarcodeAgregation
 
     public Guid DetailId { get; private set; }
     public Barcode Detail { get; private set; }
-    
-    public PrimaryBarcode(){}
 
-    public PrimaryBarcode(BPOM2DBarcode barcode, SNDocument document, SecondaryBarcode? parent = null)
+    public PrimaryBarcode() { }
+
+    public PrimaryBarcode(IBPOM2DBarcode barcode, SNDocument document, SecondaryBarcode? parent = null)
     {
         Detail = new Barcode(barcode);
-        DetailId= Detail.Id;
+        DetailId = Detail.Id;
         DocumentId = document.Id;
-        BPOM2DBarCode = barcode.ToString();
+        BPOM2DBarCode = barcode.Get2DBarcode();
         ParentId = parent?.Id;
         Parent = parent;
         Document = document;
         RegistrationStatus = RegistrationStatus.Pending;
         CreatedAt = DateTime.UtcNow;
     }
+    
 }

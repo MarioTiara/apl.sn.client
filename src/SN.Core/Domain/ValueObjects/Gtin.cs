@@ -2,7 +2,7 @@ namespace SN.Core.Domain.ValueObjects;
 
 public sealed class Gtin
 {
-    public string? Value { get; }
+    public string Value { get; }
 
     public Gtin(string value)
     {
@@ -13,9 +13,9 @@ public sealed class Gtin
         }
         else
         {
-            Value = null;
+            throw new Exception("Gtin value is not match requirements");
         }
     }
 
-    public override string? ToString() => Value;
+    public override string ToString() => Value;
 }

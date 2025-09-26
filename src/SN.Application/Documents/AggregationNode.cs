@@ -11,12 +11,12 @@ public class AggregationNode
     public List<AggregationNode> Children { get; private set; }
 
     public Serial SerialCode { get; private set; }
-    public Gtin GtinCode { get; private set; }
+    public Gtin? GtinCode { get; private set; }
     public string? Parentid { get; private set; }
-    public string? Batch { get; private set; }
-    public string? ExpireDate { get; private set; }
+    public Batch? Batch { get; private set; }
+    public DateOnly? ExpireDate { get; private set; }
 
-    public AggregationNode(string id, Serial serialCode, Gtin gtin, string? batch, string? expireDate)
+    public AggregationNode(string id, Serial serialCode, Gtin? gtin, Batch? batch, DateOnly? expireDate)
     {
         Id = id;
         // Level = level;

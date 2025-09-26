@@ -2,9 +2,9 @@ namespace SN.Core.Domain.ValueObjects;
 
 public sealed class Batch
 {
-    public string? Value { get; }
+    public string Value { get; }
 
-    public Batch(string? value)
+    public Batch(string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -13,9 +13,9 @@ public sealed class Batch
         }
         else
         {
-            Value = null;
+            throw new Exception("Batch value is not match requirements");
         }
     }
 
-    public override string? ToString() => Value;
+    public override string ToString() => Value;
 }

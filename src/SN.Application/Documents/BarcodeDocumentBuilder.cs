@@ -2,8 +2,9 @@ using SN.Applications.Documents.Dtos;
 using SN.Core.Domain;
 using SN.Core.Domain.Barcodes;
 using SN.Core.Domain.Documents;
-using SN.Core.Domain.Epcis;
+using SN.Core.Domain.SerialNode;
 using SN.Core.Domain.ValueObjects;
+using SN.Core.Factories;
 
 namespace SN.Applications.Documents;
 
@@ -11,15 +12,17 @@ namespace SN.Applications.Documents;
 public class BarcodeDocumentBuilder
 {
     private CoreDocumentDto _coreDocument;
-    public BarcodeDocumentBuilder(CoreDocumentDto coreDocument)
+    private IBPOM2DBarcodeFactory _bPOM2DBarcodeFactory;
+    public BarcodeDocumentBuilder(CoreDocumentDto coreDocument, IBPOM2DBarcodeFactory bPOM2DBarcodeFactory)
     {
         _coreDocument = coreDocument;
+        _bPOM2DBarcodeFactory = bPOM2DBarcodeFactory;
     }
 
     public SNDocument GetResult()
     {
-        var snDocument = new SNDocument(_coreDocument.SenderIdentifier, _coreDocument.ReceiverIdentifier, _coreDocument.Owner);
-        snDocument.SetFileInfo(_coreDocument.FileName, _coreDocument.FileExtension, _coreDocument.DocumentIdentifier, _coreDocument.TransactionCode);
+        var snDocument = new SNDocument(_coreDocument.SenderIdentifier, _coreDocument.ReceiverIdentifier, _coreDocument.DeliveryNumber, _coreDocument.Producer);
+        snDocument.SetFileInfo(_coreDocument.FilePath,_coreDocument.DocumentType, _coreDocument.DocumentIdentifier, _coreDocument.DoucmentCreationTime);
         BuildEpcis(snDocument);
         BuildBarcodeAggregation(snDocument);
         return snDocument;
@@ -30,15 +33,15 @@ public class BarcodeDocumentBuilder
         var parents = new Dictionary<string, Guid>();
         foreach (var ag in _coreDocument.Aggregations)
         {
-             ProcessAggregation(ag, document, parents);
+            ProcessAggregation(ag, document, parents);
         }
     }
 
     private void ProcessAggregation(AggregationNode node, SNDocument document, Dictionary<string, Guid> parents)
     {
-        var epcis = new EpcisNode(node.Id, node.Level, document.Id, GetParentid(node.Parentid, parents));
-        parents.Add(epcis.EpcisCode, epcis.Id);
-        document.AddEpcis(epcis);
+        var serialNode = new SerializedNode(node.Id, node.Level, document.Id, GetParentid(node.Parentid, parents));
+        parents.Add(serialNode.SerializedCode, serialNode.Id);
+        document.AddSerializedNode(serialNode);
 
         foreach (var child in node.Children)
         {
@@ -62,19 +65,19 @@ public class BarcodeDocumentBuilder
 
     private void BuildNode(AggregationNode node, SNDocument document, TertiaryBarcode? parentTertiary, SecondaryBarcode? parentSecondary)
     {
-        BPOM2DBarcode bpom = new BPOM2DBarcode(
+        IBPOM2DBarcode bpom = _bPOM2DBarcodeFactory.Create(
             node.SerialCode,
+            node.Level,
             node.GtinCode,
-            node.Batch != null ? new Batch(node.Batch) : null,
-            node.ExpireDate != null ? DateOnly.Parse(node.ExpireDate) : null
+            node.Batch,
+            node.ExpireDate
         );
 
         switch (node.Level)
         {
             case AgregationLevel.Tertiary:
                 var tertiary = new TertiaryBarcode(bpom, document);
-                if (parentTertiary == null && parentSecondary == null)
-                    document.AddBarcode(tertiary);
+                document.AddBarcode(tertiary); // Always add
                 foreach (var child in node.Children)
                 {
                     BuildNode(child, document, tertiary, null);
@@ -84,8 +87,7 @@ public class BarcodeDocumentBuilder
             case AgregationLevel.Secondary:
                 var secondary = new SecondaryBarcode(bpom, parentTertiary, document);
                 parentTertiary?.AddSecondary(secondary);
-                if (parentTertiary == null && parentSecondary == null)
-                    document.AddBarcode(secondary);
+                document.AddBarcode(secondary); // Always add
                 foreach (var child in node.Children)
                 {
                     BuildNode(child, document, null, secondary);
@@ -95,8 +97,7 @@ public class BarcodeDocumentBuilder
             case AgregationLevel.Primary:
                 var primary = new PrimaryBarcode(bpom, document, parentSecondary);
                 parentSecondary?.AddPrimary(primary);
-                if (parentSecondary == null)
-                    document.AddBarcode(primary);
+                document.AddBarcode(primary); // Always add
                 break;
         }
     }

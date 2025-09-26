@@ -42,17 +42,19 @@ public class EPCISAgregationBuilder : IAggregationBuilder
         var serialEpcis = EPCISParser.GetSerialCodefromEPCCode(id) ?? string.Empty;
         var gtinEpcis = EPCISParser.GetGTINfromEPCCode(id) ?? string.Empty;
 
-        var serial = new Serial(serialEpcis);
-        var gtin = new Gtin(gtinEpcis);
+        Serial serial = new Serial(serialEpcis);
+        Gtin? gtin = !string.IsNullOrEmpty(gtinEpcis) ? new Gtin(gtinEpcis) : null;
 
         _epcisAttrubuteMaps.TryGetValue(id, out var attribute);
 
+        Batch? batch = !string.IsNullOrEmpty(attribute?.LOTNO) && attribute?.LOTNO != null ? new Batch(attribute.LOTNO) : null;
+        DateOnly? expireDate = !string.IsNullOrEmpty(attribute?.DATEX) && attribute?.DATEX != null ? DateOnly.Parse(attribute.DATEX) : null;
         var node = new AggregationNode(
             id,
             serial,
             gtin,
-            attribute?.LOTNO,
-            attribute?.DATEX
+            batch,
+            expireDate
         );
 
         // Build children recursively

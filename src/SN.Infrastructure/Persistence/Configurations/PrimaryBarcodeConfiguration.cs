@@ -23,6 +23,7 @@ namespace SN.Infrastructure.Persistence.Configurations
                             .IsRequired();
 
                      builder.Property(pb => pb.RegistrationStatus)
+                            .HasConversion<string>()
                             .IsRequired();
 
                      builder.Property(pb => pb.CreatedAt)

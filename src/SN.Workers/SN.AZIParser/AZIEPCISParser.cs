@@ -2,6 +2,7 @@ using System.Xml.Serialization;
 using EPCIS.DTO;
 using SN.Applications.Documents;
 using SN.Applications.Documents.Dtos;
+using SN.AZIParser.Commons;
 using SN.Core.Domain.Companies;
 using SN.Core.Domain.Documents;
 using SN.Infrastructure.EPCIS;
@@ -12,58 +13,80 @@ public class AZIEPCISParser
 {
     public SNDocument ParseToSNDocument(string xmlPath, Company company)
     {
-        var doc = this.Serialize(xmlPath);
 
+        var doc = this.Serialize(xmlPath);
+        if (doc == null)
+        {
+            throw new Exception("Failed to deserialize EPCIS document.");
+        }
+        // Extract relevant information from the EPCIS document 
         // Document level attributes
-        var creationDate = doc.CreationDate;
+        var filePath = $"SN.AZIParse\\{xmlPath}";
+        var fileName = Path.GetFileName(xmlPath);
+        var fileExtension = Path.GetExtension(xmlPath);
+        var creationDate = DateTime.TryParse(doc.CreationDate, out var parsedDate) ? parsedDate : (DateTime?)null;
         var schemaVersion = doc.SchemaVersion;
 
         var epcAttribute = this.BuildEpcAttributesMap(doc);
         // From SBDH (StandardBusinessDocumentHeader)
         var senderId = doc.EPCISHeader?.SBDH?.Sender?.Identifier?.Value;
         var senderAuthority = doc.EPCISHeader?.SBDH?.Sender?.Identifier?.Authority;
-
         var receiverId = doc.EPCISHeader?.SBDH?.Receiver?.Identifier?.Value;
 
         var docId = doc.EPCISHeader?.SBDH?.DocumentIdentification?.InstanceIdentifier;
-        var docType = doc.EPCISHeader?.SBDH?.DocumentIdentification?.Type;
+        var docType = $"{doc.EPCISHeader?.SBDH?.DocumentIdentification?.Standard}:{doc.EPCISHeader?.SBDH?.DocumentIdentification?.TypeVersion}";
         var docCreationTime = doc.EPCISHeader?.SBDH?.DocumentIdentification?.CreationDateAndTime;
-
-        // SAP extension
-        var sapSender = doc.EPCISHeader?.SAPHeaderExtension?.SAPQueueMessageSender;
-        // var  batch= doc.EPCISBody?.EventList.Events.
 
         //Aggregation events
         var epcisAggregationEventList = doc?.EPCISBody?.EventList?.Events?
                         .Where(e => e is AggregationEvent)
                         .Cast<AggregationEvent>().ToList(); ;
-
         if (epcisAggregationEventList == null || epcisAggregationEventList.Count <= 0)
         {
             throw new Exception("no epcis event found");
         }
-        var eventsList = new List<IAggregationEvent>();
-        foreach (var epcisEvent in epcisAggregationEventList)
+        var eventsList = epcisAggregationEventList
+            .Select(epcisEvent => (IAggregationEvent)new AggregationEventV1Adapter(epcisEvent))
+            .ToList();
+
+        var bizTransaction = doc?.EPCISBody?.EventList?.Events?
+                        .Where(e => e is ObjectEvent)
+                        .Cast<ObjectEvent>()
+                        .Where(p => p.BizTransactionList != null && p.BizTransactionList.BizTransactions != null)
+                        .Select(p => p.BizTransactionList?.BizTransactions)
+                        .FirstOrDefault()?
+                        .Where(p => p != null && p.Type != null && p.Type.Contains("desadv"))
+                        .FirstOrDefault();
+        
+                    
+
+        if (bizTransaction is null || bizTransaction.Value is null)
         {
-            eventsList.Add(new AggregationEventV1Adapter(epcisEvent));
+            throw new Exception("no bizTransaction found");
+        }
+        var deliverNumber = bizTransaction.Value.Split(":").LastOrDefault();
+        if (string.IsNullOrEmpty(deliverNumber))
+        {
+            throw new Exception("no delivery number found");
         }
 
         var aggregationsList = new EPCISAgregationBuilder(eventsList, epcAttribute).Build();
-        var coreDocument = new CoreDocumentDto(senderId,
-        receiverId, company,
-        "Dummy",
-        docType,
-        docId,
-        "dummy",
-        aggregationsList
+        var coreDocument = new CoreDocumentDto(
+            docType ?? "EPCIS",
+            filePath,
+            docId,
+            deliverNumber,
+            senderId,
+            receiverId,
+            creationDate,
+            company,
+            aggregationsList
         );
 
-        var snDocumentBuilder = new BarcodeDocumentBuilder(coreDocument);
+        var snDocumentBuilder = new BarcodeDocumentBuilder(coreDocument, new AZI2DBarcodeFactory());
         var snDocument = snDocumentBuilder.GetResult();
-
         return snDocument;
         // var barcodeDocumentBuilder= new BarcodeDocumentBuilder()
-
     }
 
 

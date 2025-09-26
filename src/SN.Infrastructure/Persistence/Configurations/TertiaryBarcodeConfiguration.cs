@@ -23,7 +23,8 @@ namespace SN.Infrastructure.Persistence.Configurations
             builder.Property(tb => tb.DocumentId)
                    .IsRequired();
 
-            builder.Property(tb => tb.RegistrationStatus)
+                     builder.Property(tb => tb.RegistrationStatus)
+                            .HasConversion<string>()
                    .IsRequired();
                    
        // One-to-one: Tertiary -> Detail

@@ -17,5 +17,5 @@ public sealed class Serial
         }
     }
 
-    public override string? ToString() => Value;
+    public override string ToString() => Value;
 }
