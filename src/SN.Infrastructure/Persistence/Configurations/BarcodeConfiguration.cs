@@ -36,6 +36,9 @@ namespace SN.Infrastructure.Persistence.Configurations
                      builder.Property(b => b.ExpireDate)
                             .HasColumnType("date"); // DateOnly mapping
 
+                     builder.Property(b => b.ManufactoringDate)
+                            .HasColumnType("date"); // DateOnly mapping
+
                      // Indexes (optional)
                      builder.HasIndex(b => b.BPOM2DBarCode)
                             .IsUnique(); // Unique constraint on barcode value

@@ -11,6 +11,7 @@ public class Barcode:BaseEntity
     public string Serial { get; private set; }
     public string? Batch { get; private set; }
     public DateOnly? ExpireDate { get; private set; }
+    public DateOnly? ManufactoringDate { get; private set; }
     public AgregationLevel Level { get; private set; }
 
     public Barcode() { }
@@ -22,5 +23,6 @@ public class Barcode:BaseEntity
         Batch = barcode.Batch?.Value;
         ExpireDate = barcode.ExpireDate;
         Level = barcode.Level;
+        ManufactoringDate = barcode.ManufactoringDate;
     }
 }

@@ -16,7 +16,9 @@ public class AggregationNode
     public Batch? Batch { get; private set; }
     public DateOnly? ExpireDate { get; private set; }
 
-    public AggregationNode(string id, Serial serialCode, Gtin? gtin, Batch? batch, DateOnly? expireDate)
+    public DateOnly? ManufactoringDate { get; private set; }
+
+    public AggregationNode(string id, Serial serialCode, Gtin? gtin, Batch? batch, DateOnly? expireDate, DateOnly? manufactoringDate = null, string? parentId = null) //, AgregationLevel level
     {
         Id = id;
         // Level = level;
@@ -25,6 +27,8 @@ public class AggregationNode
         Children = new List<AggregationNode>();
         Batch = batch;
         ExpireDate = expireDate;
+        ManufactoringDate = manufactoringDate;
+        Parentid = parentId;
         // Parentid = parentId;
     }
 

@@ -8,6 +8,7 @@ public interface IBPOM2DBarcode
     Gtin? Gtin { get; }
     Batch? Batch { get; }
     DateOnly? ExpireDate { get; }
+    DateOnly? ManufactoringDate { get; }
 
     AgregationLevel Level { get; }
 

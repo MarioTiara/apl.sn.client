@@ -6,8 +6,8 @@ namespace SN.AZIParser.Commons;
 
 public class AZI2DBarcodeFactory : IBPOM2DBarcodeFactory
 {
-    public IBPOM2DBarcode Create(Serial serial, AgregationLevel level, Gtin? gtin = null, Batch? batch = null, DateOnly? expireDate = null, RegistrationStatus registrationStatus = RegistrationStatus.RegisteredExternally)
+    public IBPOM2DBarcode Create(Serial serial, AgregationLevel level, Gtin? gtin = null, Batch? batch = null, DateOnly? expireDate = null, DateOnly? manufactoringDate=null, RegistrationStatus registrationStatus = RegistrationStatus.RegisteredExternally)
     {
-        return new AZI2DBarcode(serial, level, gtin, batch, expireDate, registrationStatus);
+        return new AZI2DBarcode(serial, level, gtin, batch, expireDate, manufactoringDate, registrationStatus);
     }
 }

@@ -49,12 +49,14 @@ public class EPCISAgregationBuilder : IAggregationBuilder
 
         Batch? batch = !string.IsNullOrEmpty(attribute?.LOTNO) && attribute?.LOTNO != null ? new Batch(attribute.LOTNO) : null;
         DateOnly? expireDate = !string.IsNullOrEmpty(attribute?.DATEX) && attribute?.DATEX != null ? DateOnly.Parse(attribute.DATEX) : null;
+        DateOnly? manufactoringDate = !string.IsNullOrEmpty(attribute?.DATMF) && attribute?.DATMF != null ? DateOnly.Parse(attribute.DATMF) : null;
         var node = new AggregationNode(
             id,
             serial,
             gtin,
             batch,
-            expireDate
+            expireDate,
+            manufactoringDate
         );
 
         // Build children recursively

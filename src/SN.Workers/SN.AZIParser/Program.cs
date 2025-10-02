@@ -17,10 +17,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        Console.WriteLine("== EPCPRODUCTION Worker ==");
-
         var hostBuilder = CreateHostBuilder(args);
-
         await hostBuilder.RunConsoleAsync();
     }
 
@@ -41,6 +38,8 @@ internal class Program
            var configuration = hostingContext.Configuration;
            services.UseInfrastructure(configuration);
            services.AddScoped<IAggregationBuilder, EPCISAgregationBuilder>();
+          services.AddScoped<MainService>();
            services.AddSingleton<IHostedService, ConsoleApp>();
+
        });
 }

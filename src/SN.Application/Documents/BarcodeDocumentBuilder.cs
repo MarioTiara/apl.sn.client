@@ -70,7 +70,8 @@ public class BarcodeDocumentBuilder
             node.Level,
             node.GtinCode,
             node.Batch,
-            node.ExpireDate
+            node.ExpireDate,
+            node.ManufactoringDate
         );
 
         switch (node.Level)

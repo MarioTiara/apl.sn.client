@@ -40,7 +40,8 @@ public class AZIEPCISParser
         //Aggregation events
         var epcisAggregationEventList = doc?.EPCISBody?.EventList?.Events?
                         .Where(e => e is AggregationEvent)
-                        .Cast<AggregationEvent>().ToList(); ;
+                        .Cast<AggregationEvent>().ToList(); 
+                        
         if (epcisAggregationEventList == null || epcisAggregationEventList.Count <= 0)
         {
             throw new Exception("no epcis event found");

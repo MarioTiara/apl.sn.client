@@ -2,57 +2,37 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SN.Core.Domain.Companies;
-using SN.Core.Domain.SAPIntegration;
-using SN.Infrastructure.Persistence;
+
 
 namespace SN.AZIParser;
 
 public class ConsoleApp : IHostedService
 {
     private readonly IHostApplicationLifetime _applicationLifetime;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<ConsoleApp> _logger;
-    public ConsoleApp(IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider, ILogger<ConsoleApp> loggger)
+    private readonly MainService mainService;
+
+    public ConsoleApp(IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider)
     {
         _applicationLifetime = applicationLifetime;
-        _serviceProvider = serviceProvider;
-        _logger = loggger;
+        mainService = serviceProvider.GetRequiredService<MainService>();
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-
-        var path = @"Docs\Receiver_180Days_9a586fdd-4c25-42bd-bf21-d68436988765_2025-09-10T08_05_33.809Z.xml";
-        var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-        var parser = new AZIEPCISParser();
-        var companyOwner = context.Companies.FirstOrDefault(c => c.CompanyCode == "AZI");
-        var snDocument = parser.ParseToSNDocument(path, companyOwner?? new Company("AZI", "Azi company"));
-
-        var SAPDataSyncLogs= snDocument.PrimaryBarcodes
-            .Select(pb =>  new SAPDataSyncLog(pb.Detail) )
-            .ToList();
-        using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            context.Add(snDocument);
-            // context.Add(snDocument.Barcodes);
-            context.AddRange(SAPDataSyncLogs);
-            await context.SaveChangesAsync();
-
-            // Commit transaction
-            await transaction.CommitAsync();
+            mainService.Run();
         }
         catch (Exception ex)
         {
-            // Rollback if anything failed
-            await transaction.RollbackAsync();
-            throw; // or log
+            // Log fatal error and optionally decide whether to stop
+            Console.WriteLine($"Fatal error: {ex.Message}");
+        }
+        finally
+        {
+            await this.StopAsync(cancellationToken);
         }
 
-
-        await this.StopAsync(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -60,6 +40,5 @@ public class ConsoleApp : IHostedService
         _applicationLifetime.StopApplication();
         return Task.CompletedTask;
     }
-
 
 }
